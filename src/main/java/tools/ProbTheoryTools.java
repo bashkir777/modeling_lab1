@@ -3,6 +3,7 @@ package tools;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+import tools.dto.ErlangParams;
 
 
 public class ProbTheoryTools {
@@ -162,5 +163,16 @@ public class ProbTheoryTools {
             integerList.add(i);
         }
         return integerList;
+    }
+
+    public static ErlangParams approximateToErlangDistribution(List<Float> sequence){
+        float variationCoefficient = (float) ProbTheoryTools.coefficientVariation(sequence) / 100;
+        if(variationCoefficient >= 1 || variationCoefficient <= 0){
+            throw new IllegalArgumentException("Invalid variation coefficient");
+        }
+        int k = (int) Math.ceil(1 / (variationCoefficient * variationCoefficient));
+        float mathematicalExpectation = mathematicalExpectation(sequence);
+        float alpha = 1 / (mathematicalExpectation / k);
+        return new ErlangParams(k, alpha);
     }
 }
